@@ -1,5 +1,7 @@
 import cv2
 import numpy as np
+import copy
+import math
 
 # Parameter Values
 bgSubThreshold = 50
@@ -22,6 +24,29 @@ def removeBG(frame):
     fgmask = cv2.erode(fgmask, kernel, iterations=1)
     res = cv2.bitwise_and(frame, frame, mask=fgmask)
     return res
+
+
+def calculateFingers(res, drawing):
+    # convexity defect
+    hull = cv2.convexHull(res, returnPoints=False)
+    if len(hull) > 3:
+        defects = cv2.convexityDefects(res, hull)
+        if type(defects) != type(None):     # avoid crash
+            cnt = 0
+            for i in range(defects.shape[0]):   # calculate the angle
+                s, e, f, d = defects[i][0]
+                start = tuple(res[s][0])
+                end = tuple(res[e][0])
+                far = tuple(res[f][0])
+                a = math.sqrt((end[0] - start[0]) ** 2 + (end[1] - start[1]) ** 2)
+                b = math.sqrt((far[0] - start[0]) ** 2 + (far[1] - start[1]) ** 2)
+                c = math.sqrt((end[0] - far[0]) ** 2 + (end[1] - far[1]) ** 2)
+                angle = math.acos((b ** 2 + c ** 2 - a ** 2) / (2 * b * c))  # cosine theorem
+                if angle <= math.pi / 2:  # angle less than 90 degree, treat as fingers
+                    cnt += 1
+                    cv2.circle(drawing, far, 8, [211, 84, 0], -1)
+            return True, cnt
+        return False, 0
 
 # Camera Initialization
 camera = cv2.VideoCapture(0)
@@ -50,6 +75,28 @@ while camera.isOpened():
         cv2.imshow('Blur', blur)
         ret, thresh = cv2.threshold(blur, threshold, 255, cv2.THRESH_BINARY)
         cv2.imshow('Threshold', thresh)
+
+        # getting contours
+        thresh1 = copy.deepcopy(thresh)
+        _, contours, hierarchy = cv2.findContours(thresh1, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        length = len(contours)
+        maxArea = -1
+        if length > 0:
+            for i in range(length):     # find the biggest contour (area wise)
+                temp = contours[i]
+                area = cv2.contourArea(temp)
+                if area > maxArea:
+                    maxArea = area
+                    ci = i
+            res = contours[ci]  # res contains the biggest contour
+            hull = cv2.convexHull(res)
+            drawing = np.zeros(img.shape, np.uint8)
+            cv2.drawContours(drawing, [res], 0, (0, 255, 0), 2)
+            cv2.drawContours(drawing, [hull], 0, (0, 0, 255), 3)
+
+            isFinishCal, cnt = calculateFingers(res, drawing)
+        cv2.imshow('Output', drawing)
+
     k = cv2.waitKey(10)
     if k == 27:     # esc button
         break
@@ -57,4 +104,8 @@ while camera.isOpened():
         fgbg = cv2.createBackgroundSubtractorKNN(0, bgSubThreshold)
         BgCaptured = 1
         print("Background captured. Proceed with hand segmentation")
+    elif k == ord('r'):     # reset the background
+        fgbg = None
+        BgCaptured = 0
+        print("Background is reset. Press b to capture the background again.")
 
