@@ -16,7 +16,7 @@ blurValue = 41  # gaussian blur
 
 # Variables
 BgCaptured = 0
-
+c = 0
 
 def printThreshold(thr):
     print("Threshold value should be changed to " + str(thr))
@@ -113,11 +113,12 @@ while camera.isOpened():
         BgCaptured = 0
         print("Background is reset. Press b to capture the background again.")
     elif k == ord('c'):     # click and save the picture
-        c = 0
+        c += 1
         UPLOAD_DIR = os.path.join(ROOT + '/' + 'uploads')
         if not os.path.exists(UPLOAD_DIR):
             os.makedirs(UPLOAD_DIR)
         cv2.imwrite(UPLOAD_DIR + '/' + str(c) + '.png', blur)
         print("Image captured and sent for testing.")
+
 
 
