@@ -2,10 +2,14 @@ import cv2
 import numpy as np
 import copy
 import math
+import os
+
+ROOT = os.path.dirname(os.path.abspath(__file__))
+# print(ROOT)
 
 # Parameter Values
-bgSubThreshold = 50
-threshold = 170  # binary threshold
+bgSubThreshold = 60
+threshold = 70  # binary threshold
 cap_region_x_begin = 0.55
 cap_region_y_end = 0.8
 blurValue = 41  # gaussian blur
@@ -101,11 +105,19 @@ while camera.isOpened():
     if k == 27:     # esc button
         break
     if k == ord('b'):    # get the background
-        fgbg = cv2.createBackgroundSubtractorKNN(0, bgSubThreshold)
+        fgbg = cv2.createBackgroundSubtractorKNN(0, bgSubThreshold+20)
         BgCaptured = 1
         print("Background captured. Proceed with hand segmentation")
     elif k == ord('r'):     # reset the background
         fgbg = None
         BgCaptured = 0
         print("Background is reset. Press b to capture the background again.")
+    elif k == ord('c'):     # click and save the picture
+        c = 0
+        UPLOAD_DIR = os.path.join(ROOT + '/' + 'uploads')
+        if not os.path.exists(UPLOAD_DIR):
+            os.makedirs(UPLOAD_DIR)
+        cv2.imwrite(UPLOAD_DIR + '/' + str(c) + '.png', blur)
+        print("Image captured and sent for testing.")
+
 
