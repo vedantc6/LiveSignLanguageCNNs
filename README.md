@@ -11,4 +11,5 @@ This repository is meant for Computer Vision projects and will serve as a prelim
 * Run the hand_gesture_2.py file
 * Press 'b' to capture the background (for subtraction). Do not include the hand in the box at the time of pressing 'b'.
 * Press 'r' to reset the background.
+* Press 'c' to capture an image.
 * Press 'ESC' to exit.
