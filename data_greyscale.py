@@ -14,7 +14,7 @@ def getImage(name, file, filename):
     if not os.path.exists(new_dir_name):
         os.makedirs(new_dir_name)
     cover.save(new_dir_name + '/' + filename[:-4] + '.png')
-    return name, cover, filename
+
 
 for old_dir_name in os.walk(database_dir):
     folder = old_dir_name[0]
@@ -22,4 +22,4 @@ for old_dir_name in os.walk(database_dir):
     for filename in os.listdir(folder):
         if len(filename) > 1:
             print(filename)
-            img = getImage(folder[-1], folder + '/' + filename, filename)
+            getImage(folder[-1], folder + '/' + filename, filename)
