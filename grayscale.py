@@ -8,12 +8,12 @@ new_dir = './final_dataset/'
 
 def getImage(name, file, filename):
     im = Image.open(file).convert('LA')
-    cover = resizeimage.resize_width(im, 256)
+    cover = resizeimage.resize_width(im, 28)
     # print(cover.size)
     new_dir_name = new_dir + name
     if not os.path.exists(new_dir_name):
         os.makedirs(new_dir_name)
-    cover.save(new_dir_name + '/' + filename[:-4] + '.png')
+    cover.save(new_dir_name + '/' + filename[:-5] + '.png')
 
 
 for old_dir_name in os.walk(database_dir):
