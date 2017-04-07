@@ -106,7 +106,24 @@ def load_data_set():
 
     print(i)
 
+def test_model():
+    model = neural_network()
+    img = getImage('test_image.png')
+    x = []
+    x.append(img)
+    x = np.asarray(x).astype('float32')
 
+    index = 0
+    small = 0
+    y = model.predict(x)
+
+    for i in range(len(y[0])):
+        
+        if(y[0][i] > small):
+            small = y[0][i]
+            index = i
+
+    print(index)
 
 
 def neural_network():
@@ -139,11 +156,11 @@ def train_model(model):
               shuffle=True,
               verbose=1,
               validation_data=(X_test, Y_test))
-
+    model.save('ASLModel.h5')
     score = model.evaluate(X_test, Y_test, verbose=0)
     print('Test loss:', score[0])
     print('Test accuracy:', score[1])
 
 
 #load_data_set()
-train_model(neural_network())
+test_model()
