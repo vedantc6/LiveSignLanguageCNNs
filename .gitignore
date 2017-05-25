@@ -10,3 +10,12 @@ epochs
 finalz_dataset
 small_data
 uploads
+asl_x
+asl_y
+autochange.py
+checkpoint
+display.py
+hand_gesturev3.py
+model_dah_shizz.py
+train.py
+hand_gesture_2.py
