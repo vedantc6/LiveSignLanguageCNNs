@@ -3,3 +3,10 @@ asl_y
 asl_dataset
 final_dataset
 *.h5
+actual
+cv
+data
+epochs
+finalz_dataset
+small_data
+uploads
