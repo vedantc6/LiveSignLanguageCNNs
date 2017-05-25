@@ -3,6 +3,7 @@ import numpy as np
 import copy
 import math
 import os
+import train
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 # print(ROOT)
@@ -69,8 +70,8 @@ while camera.isOpened():
                     (255, 0, 0), 2)
     cv2.imshow("Input", frame)
     if BgCaptured == 1:
-        img = removeBG(frame)
-        img = img[0:int(cap_region_y_end*frame.shape[0]),
+        # img = removeBG(frame)
+        img = frame[0:int(cap_region_y_end*frame.shape[0]),
                 int(cap_region_x_begin*frame.shape[1]):frame.shape[1]]  # clip ROI
         cv2.imshow('Mask', img)
         # convert the image into binary image
@@ -114,11 +115,12 @@ while camera.isOpened():
         print("Background is reset. Press b to capture the background again.")
     elif k == ord('c'):     # click and save the picture
         c += 1
-        UPLOAD_DIR = os.path.join(ROOT + '/' + 'uploads')
+        UPLOAD_DIR = os.path.join(ROOT + '/' + 'actual')
         if not os.path.exists(UPLOAD_DIR):
             os.makedirs(UPLOAD_DIR)
-        cv2.imwrite(UPLOAD_DIR + '/' + str(c) + '.png', blur)
+        cv2.imwrite(UPLOAD_DIR + '/' + 'test_image.png', img)
         print("Image captured and sent for testing.")
+        train.test_model()
 
 
 
