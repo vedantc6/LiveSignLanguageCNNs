@@ -40,8 +40,6 @@ network = regression(network, optimizer='adam',
                      loss='categorical_crossentropy',
                      learning_rate=0.001)
 
-model = tflearn.DNN(network)
-model.load('./epochs/9/my_model.tflearn')
 
 #getting our data
 def train_model(X,Y,flag, i):
@@ -54,10 +52,10 @@ def train_model(X,Y,flag, i):
         X = X[:9000]
         Y = Y[:9000]
     else:
-        X_test = X[5000:]
-        Y_test = Y[5000:]
-        X = X[:5000]
-        Y = Y[:5000]
+        X_test = X[3500:]
+        Y_test = Y[3500:]
+        X = X[:3500]
+        Y = Y[:3500]
 
     # Train using classifier
     if(flag == 0):
@@ -66,16 +64,18 @@ def train_model(X,Y,flag, i):
     model.fit(X, Y, n_epoch=1, shuffle=True, validation_set=(X_test, Y_test),
               show_metric=True, batch_size=96, run_id='asl_cnn')
 
-    if not os.path.exists('./epochs/' + str(i) + '/'):
-        os.makedirs('./epochs/' + str(i) + '/')
+    if not os.path.exists('./epochs2/' + str(i) + '/'):
+        os.makedirs('./epochs2/' + str(i) + '/')
     # Save a model
-    model.save('./epochs/' + str(i) + '/' + 'my_model.tflearn')
+    model.save('./epochs2/' + str(i) + '/' + 'my_model.tflearn')
 
 
-def test_model():
+def test_model(flag):
     global network
     global model
-
+    if flag == 0:
+        model = tflearn.DNN(network)
+        model.load('./epochs2/19/my_model.tflearn')
     img = misc.imread('test_image.png')
     x = []
     x.append(img)
@@ -83,3 +83,4 @@ def test_model():
     y = model.predict(x)
     answ = np.argsort(y[0])
     print(answ)
+    return int(answ[-1])

@@ -7,7 +7,7 @@ import numpy as np
 dir_name = './small_data'
 class_size = 25
 file_batch_size = 10000
-epochs = 10
+epochs = 20
 
 classes = {
     '0': 0,

@@ -1,6 +1,5 @@
 import cv2
 import os
-import train
 import grayscale
 import new_model
 
@@ -40,16 +39,19 @@ def printThreshold(thr):
 camera = cv2.VideoCapture(0)
 cv2.namedWindow('Trackbar')
 cv2.createTrackbar('trh1', 'Trackbar', threshold, 255, printThreshold)
-
-
+word = ''
+flag = 0
 while camera.isOpened():
     ret, frame = camera.read()
+    main_window = frame
     threshold = cv2.getTrackbarPos('trh1', 'Trackbar')
     frame = cv2.bilateralFilter(frame, 5, 50, 100)  # smoothing filter, keeps edges intact but smooths it over
     frame = cv2.flip(frame, 1) # flips over y-axis
     cv2.rectangle(frame, (int(cap_region_x_begin*frame.shape[1]), 0),
                     (frame.shape[1], int(cap_region_y_end*frame.shape[0])),
                     (255, 0, 0), 2)
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    cv2.putText(frame, word, (10, 500), font, 4, (255, 255, 255), 2, cv2.LINE_AA)
     cv2.imshow("Input", frame)
     if BgCaptured == 1:
         # img = removeBG(frame)
@@ -80,11 +82,11 @@ while camera.isOpened():
         print("Image captured and sent for testing.")
         cv2.imwrite('test_image.png', frame)
         grayscale.grey()
-        new_model.test_model()
-        # train.test_model()
-        # value = train.test_model()
-        # print(value)
-        # cv2.putText(frame, str(value), (50,50), cv2.FONT_ITALIC, 4, (255,255,255), 2, cv2.LINE_AA)
+        num = new_model.test_model(flag)
+        flag = 1
+        print(classes[num])
+        word += str(classes[num])
+
 
 
 
