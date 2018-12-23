@@ -1,4 +1,5 @@
-This repository is meant for Computer Vision projects and will serve as a preliminary to my Bachelor Thesis Project.
+This repository contains my Bachelor Thesis Project on "Live Transciption of Sign Language using Convolutional Neural Networks".
+
 ## Environment
 * OS: Ubuntu 16.04
 * Platform: Python 3.5.2
